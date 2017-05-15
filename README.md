@@ -109,7 +109,7 @@ icontains(attributes, name, "El Centro")
 collectioncontains(aliases, "bar")
 ```
 
-# Compilers
+# Compiler Steps
 
 SGOL-compilers can take a few basic steps to pre-process operation chains to decrease burden on users and client applications, including **initializing secondary sets**, **injecting discards**, and **appending output**.
 
