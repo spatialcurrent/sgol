@@ -8,7 +8,7 @@ This graph language follows many of the design conventions of the common [SQL](h
 
 This language describes a chain of graph operations that are executed as a stream.  A primary set of objects (usually Graph `elements`) are passed from clause to clause.  You can save elements to secondary sets while executing the operations by using `UPDATE` and `FETCH`.  This is somewhat similiar to how [jquery](https://jquery.com/), [gulp](http://gulpjs.com/), and more are designed for `chaining`.
 
-The language [specification](#specification) and some [examples](#examples) are provided below.
+The language [specification](#specification), [compiler steps](#compiler-steps), and some [examples](#examples) are provided below.
 
 # Contributing
 
@@ -108,6 +108,24 @@ dwithin(geom_wkt, "Logan Circle, DC", 1000, meters)
 icontains(attributes, name, "El Centro")
 collectioncontains(aliases, "bar")
 ```
+
+# Compilers
+
+SGOL-compilers can take a few basic steps to pre-process operation chains to decrease burden on users and client applications, including **initializing secondary sets**, **injecting discards**, and **appending output**.
+
+**Initializing Secondary Sets**
+
+Compilers can scan for references to **secondary** sets (e.g., `... FETCH b ...`) and prepend an **INIT** to the beginning of the chain if missing (e.g., `INIT b...`).
+
+**Injecting Discards**
+
+Certain clauses, by semantic definition, never take any input, such as **SELECT** and **FETCH**.  Compilers can inject **DISCARD** clauses into a chain when they can be inferred.  For example:
+
+`SELECT A UPDATE c FETCH b...` becomes `SELECT A UPDATE c DISCARD FETCH b...`
+
+**Appending Output**
+
+If the final clause in a chain is not **OUTPUT**, then a compiler can attempt to infer the final output type.  For example, `SELECT $PointOfInterest` becomes `SELECT $PointOfInterest OUTPUT entities`.  However, the compiler may not be aware of the output type for **RUN** commands, e.g., `RUN XYZ(a, b, c)`.  If there is no final **OUTPUT**, then the response is up to the SGOL-comptaible service.
 
 # Examples
 
