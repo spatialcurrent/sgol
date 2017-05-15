@@ -8,6 +8,12 @@ This graph language follows many of the design conventions of the common [SQL](h
 
 This language describes a chain of graph operations that are executed as a stream.  A primary set of objects (usually Graph `elements`) are passed from clause to clause.  You can save elements to secondary sets while executing the operations by using `UPDATE` and `FETCH`.  This is somewhat similiar to how [jquery](https://jquery.com/), [gulp](http://gulpjs.com/), and more are designed for `chaining`.
 
+**Why not just Gremlin?**
+
+[Gremlin](http://tinkerpop.apache.org/gremlin.html) is the graph traversal language of Apache [TinkerPop](http://tinkerpop.apache.org/) and provides a common language to interface with multiple graph databases.  The key difference between **SGOL** and **Gremlin** is that an **SGOL** chain is a plain string easily built by client applications, with no dependencies.  As a plain string, it can be easily sent from web application front-ends, desktop applications, or manually input by users.  As with [CQL](http://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html), it be used directly in [QGIS](http://qgis.org/en/site/) and [OpenLayers](http://openlayers.org/) vector source urls.
+
+**What's below?**
+
 The language [specification](#specification), [compiler steps](#compiler-steps), and some [examples](#examples) are provided below.
 
 # Contributing
