@@ -131,6 +131,24 @@ If the final clause in a chain is not **OUTPUT**, then a compiler can attempt to
 
 These are some full real-world examples.
 
+**Selecting Datasets**
+
+Select all datasets where an alias for the dataset is "bank" and return as a geojson.
+
+```
+SELECT $Dataset FILTER collectioncontains(aliases, "bank") OUTPUT geojson
+```
+
+**Convex Polygon**
+
+Find all medical facilities and then wrap a convex polygon around the set and export as geojson.
+
+```
+SELECT $PointOfInterest FILTER collectioncontains(keywords, medical) RUN GetConvexPolygon(geom_wkt, geojson) OUTPUT geojson
+```
+
+**Finding Points Of Interest**
+
 ```
 NAV $PointOfInterest $HasType pointofinteresttype_cafe UPDATE collection WITH $PointOfInterest FILTER dwithin(geom_wkt, "Logan Circle, DC", 1000, meters)
 ```
