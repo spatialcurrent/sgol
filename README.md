@@ -28,7 +28,7 @@ This work is distributed under the **MIT License**.  See **LICENSE** file.
 
 ## Core Clauses
 
-The following are the `core` clauses implemented by this language: [ADD](#add), [DISCARD](#discard), [SELECT](#select), [NAV](#nav), [HAS](#has), [FETCH](#fetch), [RUN](#run), and [OUTPUT](#output).
+The following are the `core` clauses implemented by this language: [ADD](#add), [DISCARD](#discard), [FETCH](#fetch), [HAS](#has), [LIMIT](#limit), [NAV](#nav), [OUTPUT](#output), [RUN](#run), and [SELECT](#select).
 
 ### ADD
 
@@ -50,23 +50,12 @@ The following are the `core` clauses implemented by this language: [ADD](#add), 
 ... RELATE ADD DISCARD SELECT $PointOfInterest
 ```
 
-### SELECT
+### FETCH
 
-`SELECT` is a basic operation, analagous to a SQL `SELECT`.  It simply filters all the elements in the graph by a group and optionaly other filters.
-
-**Examples**
- 
- ```
- SELECT $DATASET
- SELECT $ORIGIN
- ```
-
-### NAV
-
-`NAV` is the operation for `navigating` / `transversing` / `hopping` around the graph from entity to entity following certain edges.
+`FETCH` is used for replacing the primary set of elements in the stream with those from a secondary set.  It is frequently used as a **penultimate** operation after a recursive search.
 
 ```
-NAV $PointOfInterest $HASTYPE pointofinteresttype_cafe
+FETCH collection
 ```
 
 ### HAS
@@ -77,12 +66,29 @@ NAV $PointOfInterest $HASTYPE pointofinteresttype_cafe
 ... HAS INPUT $HasType pointofinteresttype_cafe OUTPUT entities
 ```
 
-### FETCH
+### LIMIT
 
-`FETCH` is used for replacing the primary set of elements in the stream with those from a secondary set.  It is frequently used as a **penultimate** operation after a recursive search.
+`LIMIT` is the operation for limiting the size of the `current` set of entities to the given value.  It is frequently used as a **penultimate** operation after a search, after **FETCH** and before **OUTPUT**.
 
 ```
-FETCH collection
+... HAS INPUT $HasType pointofinteresttype_cafe LIMIT 10 OUTPUT entities
+```
+
+### NAV
+
+`NAV` is the operation for `navigating` / `transversing` / `hopping` around the graph from entity to entity following certain edges.
+
+```
+NAV $PointOfInterest $HASTYPE pointofinteresttype_cafe
+```
+
+
+### OUTPUT
+
+`Output` is used to specify how to encode the response to the query.  Be sure to use a output schema compatible with the last operation.
+
+```
+OUTPUT [elements | entities | edges | geojson | json | bbox]
 ```
 
 ### RUN
@@ -97,13 +103,16 @@ RUN CollectGeometries()
 RUN UpsertElements()
 ```
 
-### OUTPUT
+### SELECT
 
-`Output` is used to specify how to encode the response to the query.  Be sure to use a output schema compatible with the last operation.
+`SELECT` is a basic operation, analagous to a SQL `SELECT`.  It simply filters all the elements in the graph by a group and optionaly other filters.
 
-```
-OUTPUT [elements | entities | edges | geojson | json | bbox]
-```
+**Examples**
+ 
+ ```
+ SELECT $DATASET
+ SELECT $ORIGIN
+ ```
 
 ## Filters
 
