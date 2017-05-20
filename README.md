@@ -28,7 +28,7 @@ This work is distributed under the **MIT License**.  See **LICENSE** file.
 
 ## Core Clauses
 
-The following are the `core` clauses implemented by this language: [ADD](#add), [DISCARD](#discard), [FETCH](#fetch), [HAS](#has), [LIMIT](#limit), [NAV](#nav), [OUTPUT](#output), [RUN](#run), and [SELECT](#select).
+The following are the `core` clauses implemented by this language: [ADD](#add), [DISCARD](#discard), [FETCH](#fetch), [HAS](#has), [INIT](#init), [LIMIT](#limit), [NAV](#nav), [OUTPUT](#output), [RELATE](#relate), [RUN](#run), and [SELECT](#select).
 
 ### ADD
 
@@ -55,7 +55,7 @@ The following are the `core` clauses implemented by this language: [ADD](#add), 
 `FETCH` is used for replacing the primary set of elements in the stream with those from a secondary set.  It is frequently used as a **penultimate** operation after a recursive search.
 
 ```
-FETCH collection
+FETCH <id of secondary set>
 ```
 
 ### HAS
@@ -64,6 +64,14 @@ FETCH collection
 
 ```
 ... HAS INPUT $HasType pointofinteresttype_cafe OUTPUT entities
+```
+
+### INIT
+
+`INIT` initializes a secondary set of objects, typically elements.  It is not strictly necessary if the `SGOL-compiler` automatically prepends `INIT` clauses as needed before executing a chain of operations.  See [Compiler Steps](#compiler-steps) below for more information.
+
+```
+INIT <id of secondary set>
 ```
 
 ### LIMIT
@@ -91,6 +99,23 @@ NAV $PointOfInterest $HASTYPE pointofinteresttype_cafe
 OUTPUT [ bbox | edges | elements | entities | geojson | json | text | void ]
 ```
 
+### RELATE
+
+`RELATE` is used for calculating the geospatial relationship between two sets of entities, the first set being the **primary** set and the second being a **secondary** set referenced by id.  The total number of calculations is in `O(mn)` time, so your SGOL-server may cache results to increase performance.
+
+```
+... RELATE <id of secondary set> ADD OUTPUT void
+```
+
+**Full Example**
+
+```
+SELECT location_test UPDATE location DISCARD \
+SELECT $PointOfInterest FILTER bbox(-180,-90,180,90) \
+RELATE location ADD \
+OUTPUT void
+```
+
 ### RUN
 
 `RUN` is used for directly executing graph operations known to the server.  It is frequently used at the end of a stream for transforming the output.
@@ -111,13 +136,19 @@ RUN AddElementsFromGeoMesa(PointOfInterest, catalog, poi, "-180,-90,180,90")
 
 ### SELECT
 
-`SELECT` is a basic operation, analagous to a SQL `SELECT`.  It simply filters all the elements in the graph by a group and optionaly other filters.
+`SELECT` is a basic operation, analagous to a SQL `SELECT`.  It simply filters all the elements in the graph by a group and optionaly other filters.  You can select an entity by it's id or select all the entities in a list of groups.  If selecting by group, then use a comma-separated list with each group prepended by a `$`.  You can optionally, also save the output to a secondary set by id.
+
+**Specification**
+
+```
+SELECT [ <entity id> | $<group>[,$<group> ...] ] [UPDATE <id of secondary set> [WITH $<group>[,$<group> ...] ]
+```
 
 **Examples**
  
  ```
  SELECT $DATASET
- SELECT $ORIGIN
+ SELECT $PointOfIntereset,$PointOfInterestType RUN GetElementsWithinSet() OUTPUT elements
  ```
 
 ## Filters
