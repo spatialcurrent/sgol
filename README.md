@@ -85,10 +85,10 @@ NAV $PointOfInterest $HASTYPE pointofinteresttype_cafe
 
 ### OUTPUT
 
-`Output` is used to specify how to encode the response to the query.  Be sure to use a output schema compatible with the last operation.
+`Output` is used to specify the type of objects returned by the chain of operations.  This is used for encoding the response to SGOL clients.  **void** can be used to signal that there is no response (like a SQL update).  If the output type is missing or invalid for the chain, the SGOL server may throw an error.
 
 ```
-OUTPUT [elements | entities | edges | geojson | json | bbox]
+OUTPUT [ bbox | edges | elements | entities | geojson | json | text | void ]
 ```
 
 ### RUN
@@ -101,6 +101,12 @@ RUN GetConvexHull()
 RUN GetExtent()
 RUN CollectGeometries()
 RUN UpsertElements()
+```
+
+`RUN` can also be used for calling custom operations.
+
+```
+RUN AddElementsFromGeoMesa(PointOfInterest, catalog, poi, "-180,-90,180,90")
 ```
 
 ### SELECT
