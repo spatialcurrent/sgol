@@ -84,10 +84,22 @@ INIT <id of secondary set>
 
 ### NAV
 
-`NAV` is the operation for `navigating` / `transversing` / `hopping` around the graph from entity to entity following certain edges.
+`NAV` is the operation for `navigating` / `transversing` / `hopping` around the graph from entity to entity following certain edges.  The simplest clause is `NAV A Edge B`, but can be expanded in a variety of ways.  
+
+You can select an entity set by it's id, select all the entities in a list of groups, or use `INPUT` to use the primary set of elements (from the previous operation).  If selecting by group, then use a comma-separated list with each group prepended by a `$`.  If `B` is `-` or `_` then `NAV` will return adjacent edges rather than continuing through to the adjacent entities.  You can optionally, also save the output to a secondary set by id by using `UPDATE`.
 
 ```
-NAV $PointOfInterest $HASTYPE pointofinteresttype_cafe
+NAV [ INPUT | <entity id> | $ | $<group>[,$<group> ...] ] \
+[ $ | $<group>[,$<group> ...] ] \
+[ _ | - | <entity id> | $ | $<group>[,$<group> ...] ] \
+[UPDATE <id of secondary set> [WITH $<group>[,$<group> ...] ]
+```
+
+**Examples**
+
+```
+NAV $PointOfInterest $HasType pointofinteresttype_cafe
+SELECT $PointOfInterest NAV INPUT $ _ RUN CountGroups OUTPUT json
 ```
 
 
