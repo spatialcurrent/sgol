@@ -175,7 +175,7 @@ collectioncontains(aliases, "bar")
 
 # Compiler Steps
 
-SGOL-compilers can take a few basic steps to pre-process operation chains to decrease burden on users and client applications, including **initializing secondary sets**, **injecting discards**, and **appending output**.
+SGOL-compilers can take a few basic steps to pre-process operation chains to decrease burden on users and client applications, including **initializing secondary sets**, **injecting discards**, **replacing server variables**, and **appending output**.
 
 **Initializing Secondary Sets**
 
@@ -186,6 +186,14 @@ Compilers can scan for references to **secondary** sets (e.g., `... FETCH b ...`
 Certain clauses, by semantic definition, never take any input, such as **SELECT** and **FETCH**.  Compilers can inject **DISCARD** clauses into a chain when they can be inferred.  For example:
 
 `SELECT A UPDATE c FETCH b...` becomes `SELECT A UPDATE c DISCARD FETCH b...`
+
+**Replacing Server Variables**
+
+An SGOL statement may include "variables" that are replaced by the server right before intialization.  A simple way to represent the variables is with an enclosing `[...]`, such as `[limit]` to represent the global API limit.  Other variables could be context-specific, such as `[bbox]`, `[distance]`, and `[units]`.  Simple text replace may be all that is needed; however, the method used is left to the implementation.
+
+```
+... LIMIT [limit] OUTPUT entities
+```
 
 **Appending Output**
 
