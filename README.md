@@ -12,6 +12,10 @@ This language describes a chain of graph operations that are executed as a strea
 
 [Gremlin](http://tinkerpop.apache.org/gremlin.html) is the graph traversal language of Apache [TinkerPop](http://tinkerpop.apache.org/) and provides a common language to interface with multiple graph databases.  The key difference between **SGOL** and **Gremlin** is that an **SGOL** chain is a plain string easily built by client applications, with no dependencies.  As a plain string, it can be easily sent from web application front-ends, desktop applications, or manually input by users.  As with [CQL](http://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html), it be used directly in [QGIS](http://qgis.org/en/site/) and [OpenLayers](http://openlayers.org/) vector source urls.
 
+**What about Cypher?**
+
+[Cypher](https://neo4j.com/developer/cypher-query-language/) is the SQL-inspired language of [Neo4j](https://neo4j.com).  Where as Cypher is specific to the Neo4j application, SGOL is built to be abstract and extensible so that it can be used by multiple applications.  Additional SGOL focuses on "operations", which may be more complex than searching or adding nodes to graph.  For example, with SGOL you can directly call operations advertised by your system that could transfer data from a NoSQL database into a graph database, at scale.  Or you could call operations to send response via another channel (email, etc.) rather than directly in HTTP request-response cycle.
+
 **What's below?**
 
 The language [specification](#specification), [compiler steps](#compiler-steps), and some [examples](#examples) are provided below.
